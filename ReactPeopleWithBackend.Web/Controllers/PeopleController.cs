@@ -39,7 +39,7 @@ namespace ReactPeopleWithBackend.Web.Controllers
             repo.DeletePerson(vm.Id);
         }
 
-        [Route("DeleteMutliple")]
+        [Route("DeleteMultiple")]
         [HttpPost]
         public void DeleteMultiple(DeletePeopleViewModel vm)
         {
