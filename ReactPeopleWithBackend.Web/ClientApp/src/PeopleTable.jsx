@@ -58,7 +58,7 @@ class PeopleTable extends Component {
 
     onDeleteAllClick = () => {
         const people = this.state.people.filter(p => p.isChecked);
-        axios.post('/api/people/deletmultiple', { ids: people.map(p => p.id) }).then(() => {
+        axios.post('/api/people/deletemultiple', { ids: people.map(p => p.id) }).then(() => {
             this.loadPeople();
         });
     }
@@ -99,6 +99,7 @@ class PeopleTable extends Component {
             person.isChecked = !person.isChecked;
         });
         this.setState(nextState)
+        console.log(nextState);
     }
 
     render() {
