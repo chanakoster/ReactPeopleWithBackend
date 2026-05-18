@@ -8,6 +8,7 @@ class PeopleTable extends Component {
     state = {
         people: [],
         currentPerson: {
+            id: '',
             firstName: '',
             lastName: '',
             age: '',
@@ -37,9 +38,8 @@ class PeopleTable extends Component {
     onAddClick = () => {
         axios.post('/api/people/add', this.state.currentPerson).then(() => {
             this.setState({ currentPerson: { firstName: '', lastName: '', age: '' } });
+            this.loadPeople();
         })
-
-        this.loadPeople();
     }
 
     onCheckAllClick = () => {
@@ -57,13 +57,17 @@ class PeopleTable extends Component {
     }
 
     onDeleteAllClick = () => {
-
+        const people = this.state.people.filter(p => p.isChecked);
+        axios.post('/api/people/deletmultiple', { ids: people.map(p => p.id) }).then(() => {
+            this.loadPeople();
+        });
     }
+
 
     onEditClick = (p) => {
         console.log(p);
         const nextState = produce(this.state, draft => {
-            draft.currentPerson = p;
+            draft.currentPerson = { ...p };
             draft.currentPerson.isEditing = true;
         });
         this.setState(nextState);
@@ -82,13 +86,25 @@ class PeopleTable extends Component {
         });
     }
 
+    onCancelClick = () => {
 
+        this.setState({ currentPerson: { id: '', firstName: '', lastName: '', age: '', isChecked: false, isEditing: false } });
+
+        console.log(this.state.currentPerson);
+    }
+
+    onCheckChanged = id => {
+        const nextState = produce(this.state, draft => {
+            const person = draft.people.find(p => p.id === id);
+            person.isChecked = !person.isChecked;
+        });
+        this.setState(nextState)
+    }
 
     render() {
-        const { id, firstName, lastName, age, isEditing } = this.state.currentPerson;
+        const { firstName, lastName, age, isEditing } = this.state.currentPerson;
         return <div className='container mt-5'>
             <AddPersonForm
-                id={id}
                 firstName={firstName}
                 lastName={lastName}
                 age={age}
@@ -96,6 +112,7 @@ class PeopleTable extends Component {
                 onTextChange={this.onTextChange}
                 onAddClick={this.onAddClick}
                 onUpdateClick={this.onUpdateClick}
+                onCancelClick={this.onCancelClick}
             />
             <table className='table table-hover table-striped table-bordered'>
                 <thead>
@@ -113,7 +130,7 @@ class PeopleTable extends Component {
                 </thead>
                 <tbody>
                     {this.state.people.map(p => <tr key={p.id}>
-                        <td><input type="checkbox" className='form-check-input' style={{ transform: 'scale(1.5)' }} checked={p.isChecked} /></td>
+                        <td><input type="checkbox" className='form-check-input' style={{ transform: 'scale(1.5)' }} onChange={() => this.onCheckChanged(p.id)} checked={p.isChecked} /></td>
                         <td>{p.firstName}</td>
                         <td>{p.lastName}</td>
                         <td>{p.age}</td>
