@@ -19,7 +19,7 @@ class PeopleTable extends Component {
 
     loadPeople() {
         axios.get('/api/people/getall').then(response => {
-            this.setState({ people: response.data, isLoading: false })
+            this.setState({ people: response.data})
         })
     }
 
@@ -58,7 +58,7 @@ class PeopleTable extends Component {
 
     onDeleteAllClick = () => {
         const people = this.state.people.filter(p => p.isChecked);
-        axios.post('/api/people/deletemultiple', { ids: people.map(p => p.id) }).then(() => {
+        axios.post('/api/people/deletemultiple', people).then(() => {
             this.loadPeople();
         });
     }
