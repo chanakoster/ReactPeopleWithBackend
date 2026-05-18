@@ -19,8 +19,13 @@ class PeopleTable extends Component {
 
     loadPeople() {
         axios.get('/api/people/getall').then(response => {
-            this.setState({ people: response.data})
+            const people = response.data.map(p => ({
+                ...p,
+                isChecked: false
+            }))
+            this.setState({ people })
         })
+
     }
 
     componentDidMount() {
@@ -58,7 +63,9 @@ class PeopleTable extends Component {
 
     onDeleteAllClick = () => {
         const people = this.state.people.filter(p => p.isChecked);
-        axios.post('/api/people/deletemultiple', people).then(() => {
+        const ids = people.map(p => p.id);
+        console.log(ids)
+        axios.post('/api/people/deletemultiple', { ids }).then(() => {
             this.loadPeople();
         });
     }
@@ -119,7 +126,7 @@ class PeopleTable extends Component {
                 <thead>
                     <tr>
                         <th className="vstack gap-2">
-                            <button onClick={this.onDeleteAllClick} className="btn btn-danger">Delete All</button>
+                            <button onClick={this.onDeleteAllClick} className="btn btn-danger">Delete Selected</button>
                             <button onClick={this.onCheckAllClick} className="btn btn-outline-danger">Check All</button>
                             <button onClick={this.onUncheckAllClick} className="btn btn-outline-danger">Uncheck All</button>
                         </th>

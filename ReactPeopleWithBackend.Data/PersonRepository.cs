@@ -46,9 +46,10 @@ namespace ReactPeopleWithBackend.Data
             }
         }
 
-        public void DeleteMultiplePeople(List<Person> people)
+        public void DeleteMultiplePeople(List<int> ids)
         {
             using var context = new PeopleDataContext(_connectionString);
+            var people = context.People.Where(p => ids.Contains(p.Id)).ToList();
             context.People.RemoveRange(people);
             context.SaveChanges();
         }

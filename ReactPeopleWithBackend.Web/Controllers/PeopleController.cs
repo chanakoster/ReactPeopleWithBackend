@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using ReactPeopleWithBackend.Data;
+using ReactPeopleWithBackend.Web.Models;
 
 namespace ReactPeopleWithBackend.Web.Controllers
 {
@@ -32,18 +33,18 @@ namespace ReactPeopleWithBackend.Web.Controllers
 
         [Route("Delete")]
         [HttpPost]
-        public void DeletePerson(int id)
+        public void DeletePerson(DeletePersonViewModel vm)
         {
             var repo = new PersonRepository(_connectionString);
-            repo.DeletePerson(id);
+            repo.DeletePerson(vm.Id);
         }
 
         [Route("DeleteMutliple")]
         [HttpPost]
-        public void DeleteMultiple(List<Person> people)
+        public void DeleteMultiple(DeletePeopleViewModel vm)
         {
             var repo = new PersonRepository(_connectionString);
-            repo.DeleteMultiplePeople(people);
+            repo.DeleteMultiplePeople(vm.Ids);
         }
 
         [Route("Edit")]
